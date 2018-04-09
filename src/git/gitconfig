@@ -1,5 +1,11 @@
+[user]
+    email   = chencanjob@gmail.com
+    name    = can.chen
 [alias]
 
+    st  = status -s
+    ci  = commit
+    ll  = log --oneline --decorate --color
     a   = commit --amend
     br  = branch
     c   = commit

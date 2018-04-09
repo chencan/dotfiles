@@ -68,3 +68,15 @@ alias u="sudo softwareupdate --install --all \
             && brew cleanup \
             && npm install -g npm \
             && npm update -g"
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Cocoapods.
+
+alias podi='pod install --verbose'
+alias podu='pod update --verbose'
+alias podin='pod install --verbose --no-repo-update'
+alias podun='pod update --verbose --no-repo-update'
+

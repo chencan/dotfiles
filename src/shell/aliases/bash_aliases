@@ -14,6 +14,7 @@ alias e="vim --"
 alias g="git"
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias ll="ls -l"
+alias ls="ls -G"
 alias m="man"
 alias map="xargs -n1"
 alias n="npm"
@@ -22,6 +23,7 @@ alias q="exit"
 alias rm="rm -rf --"
 alias t="tmux"
 alias y="yarn"
+alias httpserver='python -m SimpleHTTPServer'
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
