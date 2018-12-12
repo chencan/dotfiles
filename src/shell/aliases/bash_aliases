@@ -27,6 +27,9 @@ alias httpserver='python -m SimpleHTTPServer'
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+alias maketag='find . -name "*.h" -o -name "*.c" -o -name "*.cc" -o -name "*.S" -o -name "*.ch" -o -name "*.cpp" -o -name "*.java" > cscope.files;cscope -bkq -i cscope.files;ctags -R -f tags'
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Load OS specific aliases.
 
 . "aliases/$OS/bash_aliases"
