@@ -16,6 +16,7 @@
     dc  = diff --cached
     f   = fetch
     g   = log --graph --pretty=custom           # Show custom graph.
+    ga  = log --all --graph --decorate --oneline --simplify-by-decoration
     git = !exec git                             # Allow `$ git git git...`
     l   = log --pretty=custom                   # Show custom log.
     lc  = shortlog --email --numbered --summary # List contributors.

@@ -29,3 +29,7 @@ if [ -d "$HOME/.nvm" ]; then
 
     install_package "Yarn" "yarn" "--no-install-recommends"
 fi
+
+
+install_package "python3-dev" "python3-pip" "python3-setuptools"
+sudo pip3 install thefuck
