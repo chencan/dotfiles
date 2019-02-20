@@ -114,6 +114,7 @@ set wildmenu                   " Enable enhanced command-line
                                " match highlighted).
 
 set winminheight=0             " Allow windows to be squashed.
+set mouse=a
 
 
 " ----------------------------------------------------------------------
@@ -175,7 +176,7 @@ call vundle#begin("~/.vim/plugins")
     Plugin 'tpope/vim-surround'
     Plugin 'tpope/vim-unimpaired'
     Plugin 'wellle/targets.vim'
-
+    Plugin 'taglist-plus'
 call vundle#end()
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

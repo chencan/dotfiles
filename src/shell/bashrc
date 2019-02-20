@@ -4,4 +4,3 @@
     && . ~/.bash_profile
 
 eval $(thefuck --alias)
-
