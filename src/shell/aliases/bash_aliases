@@ -24,7 +24,7 @@ alias rm="rm -rf --"
 alias t="tmux"
 alias y="yarn"
 alias httpserver='python -m SimpleHTTPServer'
-alias exo='export OUTPUT=$(cat output)'
+alias exo='export OUTPUT=$(cat output_t);rm output_t'
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 alias maketag='find . -name "*.h" -o -name "*.c" -o -name "*.cc" -o -name "*.S" -o -name "*.ch" -o -name "*.cpp" -o -name "*.java" > cscope.files;cscope -bkq -i cscope.files;ctags -R -f tags'
