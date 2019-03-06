@@ -114,7 +114,6 @@ set wildmenu                   " Enable enhanced command-line
                                " match highlighted).
 
 set winminheight=0             " Allow windows to be squashed.
-set mouse=a
 
 
 " ----------------------------------------------------------------------
