@@ -18,7 +18,7 @@
     f   = fetch
     g   = log --graph --pretty=custom           # Show custom graph.
     gas = log --all --graph --decorate --oneline --simplify-by-decoration
-    ga  = log --graph --oneline
+    ga  = log --all --graph --oneline
     git = !exec git                             # Allow `$ git git git...`
     l   = log --pretty=custom                   # Show custom log.
     lc  = shortlog --email --numbered --summary # List contributors.
