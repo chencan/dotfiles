@@ -56,3 +56,11 @@ unset -f source_bash_files
 # and time of the last login, the message of the day, etc.).
 
 clear
+
+
+eval $(thefuck --alias)
+
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
+[ -f /usr/share/autojump/autojump.sh ] && . /usr/share/autojump/autojump.sh
+
