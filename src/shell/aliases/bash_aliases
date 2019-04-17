@@ -26,6 +26,7 @@ alias y="yarn"
 alias httpserver='python -m SimpleHTTPServer'
 alias exo='export OUTPUT=$(cat output_t);rm output_t'
 alias ssh_to_server='ssh can.chen@10.111.128.51'
+alias awk_file="awk -F : '{print $1}' | sort | uniq"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 alias maketag='find . -name "*.h" -o -name "*.c" -o -name "*.cc" -o -name "*.S" -o -name "*.ch" -o -name "*.cpp" -o -name "*.java" > cscope.files;cscope -bkq -i cscope.files;ctags -R -f tags'

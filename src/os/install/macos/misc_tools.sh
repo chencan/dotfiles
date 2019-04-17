@@ -16,3 +16,5 @@ if [ -d "$HOME/.nvm" ]; then
 fi
 
 brew_install "thefuck"
+brew_install "ncdu"
+brew_install "autojump"
