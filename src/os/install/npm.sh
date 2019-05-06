@@ -30,6 +30,12 @@ main() {
 
     install_npm_package "!nstant-markdown-d" "instant-markdown-d"
 
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    printf "\n"
+
+    install_npm_package "" "diagrams"
+
 }
 
 main
