@@ -174,3 +174,309 @@ qt() {
     #     │└─ search all files under each directory, recursively
     #     └─ ignore case
 }
+
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Usefule function from AOSP build/envsetup.mk.
+
+
+
+function crepo()
+{
+    TOPFILE=build/core/envsetup.mk
+    local HERE=$PWD
+    T=
+    while [\( $PWD != "/" \) ]; do
+        T=$PWD
+        if [ -f "$T/.git" ]; then
+            \cd $T
+            return
+        fi
+        \cd ..
+    done
+    \cd $HERE
+    echo "can't find .git"
+}
+
+# simplified version of ps; output in the form
+# <pid> <procname>
+function qpid() {
+    local prepend=''
+    local append=''
+    if [ "$1" = "--exact" ]; then
+        prepend=' '
+        append='$'
+        shift
+    elif [ "$1" = "--help" -o "$1" = "-h" ]; then
+		echo "usage: qpid [[--exact] <process name|pid>"
+		return 255
+	fi
+
+    local EXE="$1"
+    if [ "$EXE" ] ; then
+		qpid | \grep "$prepend$EXE$append"
+	else
+		adb shell ps \
+			| tr -d '\r' \
+			| sed -e 1d -e 's/^[^ ]* *\([0-9]*\).* \([^ ]*\)$/\1 \2/'
+	fi
+}
+
+function pid()
+{
+    local prepend=''
+    local append=''
+    if [ "$1" = "--exact" ]; then
+        prepend=' '
+        append='$'
+        shift
+    fi
+    local EXE="$1"
+    if [ "$EXE" ] ; then
+        local PID=`adb shell ps \
+            | tr -d '\r' \
+            | \grep "$prepend$EXE$append" \
+            | sed -e 's/^[^ ]* *\([0-9]*\).*$/\1/'`
+        echo "$PID"
+    else
+        echo "usage: pid [--exact] <process name>"
+		return 255
+    fi
+}
+
+# coredump_setup - enable core dumps globally for any process
+#                  that has the core-file-size limit set correctly
+#
+# NOTE: You must call also coredump_enable for a specific process
+#       if its core-file-size limit is not set already.
+# NOTE: Core dumps are written to ramdisk; they will not survive a reboot!
+
+function coredump_setup()
+{
+	echo "Getting root...";
+	adb root;
+	adb wait-for-device;
+
+	echo "Remounting root parition read-write...";
+	adb shell mount -w -o remount -t rootfs rootfs;
+	sleep 1;
+	adb wait-for-device;
+	adb shell mkdir -p /cores;
+	adb shell mount -t tmpfs tmpfs /cores;
+	adb shell chmod 0777 /cores;
+
+	echo "Granting SELinux permission to dump in /cores...";
+	adb shell restorecon -R /cores;
+
+	echo "Set core pattern.";
+	adb shell 'echo /cores/core.%p > /proc/sys/kernel/core_pattern';
+
+	echo "Done."
+}
+
+# coredump_enable - enable core dumps for the specified process
+# $1 = PID of process (e.g., $(pid mediaserver))
+#
+# NOTE: coredump_setup must have been called as well for a core
+#       dump to actually be generated.
+
+function coredump_enable()
+{
+	local PID=$1;
+	if [ -z "$PID" ]; then
+		printf "Expecting a PID!\n";
+		return;
+	fi;
+	echo "Setting core limit for $PID to infinite...";
+	adb shell prlimit $PID 4 -1 -1
+}
+
+# core - send SIGV and pull the core for process
+# $1 = PID of process (e.g., $(pid mediaserver))
+#
+# NOTE: coredump_setup must be called once per boot for core dumps to be
+#       enabled globally.
+
+function core()
+{
+	local PID=$1;
+
+	if [ -z "$PID" ]; then
+		printf "Expecting a PID!\n";
+		return;
+	fi;
+
+	local CORENAME=core.$PID;
+	local COREPATH=/cores/$CORENAME;
+	local SIG=SEGV;
+
+	coredump_enable $1;
+
+	local done=0;
+	while [ $(adb shell "[ -d /proc/$PID ] && echo -n yes") ]; do
+		printf "\tSending SIG%s to %d...\n" $SIG $PID;
+		adb shell kill -$SIG $PID;
+		sleep 1;
+	done;
+
+	adb shell "while [ ! -f $COREPATH ] ; do echo waiting for $COREPATH to be generated; sleep 1; done"
+	echo "Done: core is under $COREPATH on device.";
+}
+
+# systemstack - dump the current stack trace of all threads in the system process
+# to the usual ANR traces file
+function systemstack()
+{
+    stacks system_server
+}
+
+function stacks()
+{
+    if [[ $1 =~ ^[0-9]+$ ]] ; then
+        local PID="$1"
+    elif [ "$1" ] ; then
+        local PIDLIST="$(pid $1)"
+        if [[ $PIDLIST =~ ^[0-9]+$ ]] ; then
+            local PID="$PIDLIST"
+        elif [ "$PIDLIST" ] ; then
+            echo "more than one process: $1"
+        else
+            echo "no such process: $1"
+        fi
+    else
+        echo "usage: stacks [pid|process name]"
+    fi
+
+    if [ "$PID" ] ; then
+        # Determine whether the process is native
+        if adb shell ls -l /proc/$PID/exe | grep -q /system/bin/app_process ; then
+            # Dump stacks of Dalvik process
+            local TRACES=/data/anr/traces.txt
+            local ORIG=/data/anr/traces.orig
+            local TMP=/data/anr/traces.tmp
+
+            # Keep original traces to avoid clobbering
+            adb shell mv $TRACES $ORIG
+
+            # Make sure we have a usable file
+            adb shell touch $TRACES
+            adb shell chmod 666 $TRACES
+
+            # Dump stacks and wait for dump to finish
+            adb shell kill -3 $PID
+            adb shell notify $TRACES >/dev/null
+
+            # Restore original stacks, and show current output
+            adb shell mv $TRACES $TMP
+            adb shell mv $ORIG $TRACES
+            adb shell cat $TMP
+        else
+            # Dump stacks of native process
+            local USE64BIT="$(is64bit $PID)"
+            adb shell debuggerd$USE64BIT -b $PID
+        fi
+    fi
+}
+
+# Read the ELF header from /proc/$PID/exe to determine if the process is
+# 64-bit.
+function is64bit()
+{
+    local PID="$1"
+    if [ "$PID" ] ; then
+        if [[ "$(adb shell cat /proc/$PID/exe | xxd -l 1 -s 4 -ps)" -eq "02" ]] ; then
+            echo "64"
+        else
+            echo ""
+        fi
+    else
+        echo ""
+    fi
+}
+
+case `uname -s` in
+    Darwin)
+        function sgrep()
+        {
+            find -E . -name .repo -prune -o -name .git -prune -o  -type f -iregex '.*\.(c|h|cc|cpp|S|java|xml|sh|mk|aidl)' -print0 | xargs -0 grep --color -n "$@"
+        }
+
+        ;;
+    *)
+        function sgrep()
+        {
+            find . -name .repo -prune -o -name .git -prune -o  -type f -iregex '.*\.\(c\|h\|cc\|cpp\|S\|java\|xml\|sh\|mk\|aidl\)' -print0 | xargs -0 grep --color -n "$@"
+        }
+        ;;
+esac
+
+
+
+function ggrep()
+{
+    find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f -name "*\.gradle" -print0 | xargs -0 grep --color -n "$@"
+}
+
+function jgrep()
+{
+    find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f -name "*\.java" -print0 | xargs -0 grep --color -n "$@"
+}
+
+function cgrep()
+{
+    find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f \( -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) -print0 | xargs -0 grep --color -n "$@"
+}
+
+function resgrep()
+{
+    for dir in `find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -name res -type d`; do find $dir -type f -name '*\.xml' -print0 | xargs -0 grep --color -n "$@"; done;
+}
+
+function mangrep()
+{
+    find . -name .repo -prune -o -name .git -prune -o -path ./out -prune -o -type f -name 'AndroidManifest.xml' -print0 | xargs -0 grep --color -n "$@"
+}
+
+function sepgrep()
+{
+    find . -name .repo -prune -o -name .git -prune -o -path ./out -prune -o -name sepolicy -type d -print0 | xargs -0 grep --color -n -r --exclude-dir=\.git "$@"
+}
+
+function rcgrep()
+{
+    find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f -name "*\.rc*" -print0 | xargs -0 grep --color -n "$@"
+}
+
+case `uname -s` in
+    Darwin)
+        function mgrep()
+        {
+            find -E . -name .repo -prune -o -name .git -prune -o -path ./out -prune -o -type f -iregex '.*/(Makefile|Makefile\..*|.*\.make|.*\.mak|.*\.mk)' -print0 | xargs -0 grep --color -n "$@"
+        }
+
+        function treegrep()
+        {
+            find -E . -name .repo -prune -o -name .git -prune -o -type f -iregex '.*\.(c|h|cpp|S|java|xml)' -print0 | xargs -0 grep --color -n -i "$@"
+        }
+
+        ;;
+    *)
+        function mgrep()
+        {
+            find . -name .repo -prune -o -name .git -prune -o -path ./out -prune -o -regextype posix-egrep -iregex '(.*\/Makefile|.*\/Makefile\..*|.*\.make|.*\.mak|.*\.mk)' -type f -print0 | xargs -0 grep --color -n "$@"
+        }
+
+        function treegrep()
+        {
+            find . -name .repo -prune -o -name .git -prune -o -regextype posix-egrep -iregex '.*\.(c|h|cpp|S|java|xml)' -type f -print0 | xargs -0 grep --color -n -i "$@"
+        }
+
+        ;;
+esac
+
+
+
+
