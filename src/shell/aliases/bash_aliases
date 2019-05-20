@@ -26,6 +26,8 @@ alias y="yarn"
 alias httpserver='python -m SimpleHTTPServer'
 alias exo='export OUTPUT=$(cat output_t);rm output_t'
 alias ssh_to_server='ssh can.chen@10.111.128.51'
+alias ssh_to_cdc1='ssh chencan@10.111.136.27'
+alias ssh_to_cdcp='ssh fangying@10.116.36.97'
 alias awk_file="awk -F : '{print $1}' | sort | uniq"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
