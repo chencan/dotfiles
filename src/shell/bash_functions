@@ -186,12 +186,11 @@ qt() {
 
 function crepo()
 {
-    TOPFILE=build/core/envsetup.mk
     local HERE=$PWD
     T=
-    while [\( $PWD != "/" \) ]; do
+    while [ \( $PWD != "/" \) ]; do
         T=$PWD
-        if [ -f "$T/.git" ]; then
+        if [ -d "$T/.git" ]; then
             \cd $T
             return
         fi

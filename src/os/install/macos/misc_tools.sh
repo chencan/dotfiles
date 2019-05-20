@@ -18,3 +18,4 @@ fi
 brew_install "thefuck"
 brew_install "ncdu"
 brew_install "autojump"
+brew_install "ctags"
