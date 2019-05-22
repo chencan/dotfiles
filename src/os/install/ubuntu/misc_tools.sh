@@ -36,3 +36,4 @@ sudo pip3 install thefuck
 install_package ncdu
 install_package autojump
 install_package ctags
+install_package tree
