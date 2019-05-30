@@ -15,9 +15,9 @@ if [ -d "$HOME/.nvm" ]; then
     brew_install "Yarn" "yarn" "" "" "--without-node"
 fi
 
-brew_install "thefuck"
-brew_install "ncdu"
-brew_install "autojump"
-brew_install "ctags"
-brew_install "tree"
+brew_install "thefuck" "thefuck"
+brew_install "ncdu" "ncdu"
+brew_install "autojump" "autojump"
+brew_install "ctags" "ctags"
+brew_install "tree" "tree"
 brew_install "Spectacle" "spectacle" "caskroom/cask" "cask"
