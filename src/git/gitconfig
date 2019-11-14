@@ -101,6 +101,13 @@
         git reset --hard \"HEAD~$n\"; \
     }; f"
 
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Show commit with full file contents
+
+    v = "!f() { \
+        git show \"$1\" --pretty=format: --name-only | xargs -t -I {} git show \"$1\" -U10000 {}; \
+    }; f"
 
 [color "branch"]
 
@@ -184,7 +191,7 @@
     path = ~/.gitconfig.local
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
