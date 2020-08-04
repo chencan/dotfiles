@@ -20,14 +20,11 @@ alias map="xargs -n1"
 alias n="npm"
 alias path='printf "%b\n" "${PATH//:/\\n}"'
 alias q="exit"
-alias rm="rm -rf --"
 alias t="tmux"
 alias y="yarn"
 alias httpserver='python -m SimpleHTTPServer'
-alias exo='export OUTPUT=$(cat output_t);rm output_t'
 alias ssh_to_server='ssh can.chen@10.111.128.51'
-alias ssh_to_cdc1='ssh -X chencan@10.111.136.27'
-alias awk_file="awk -F : '{print $1}' | sort | uniq"
+alias ssh_to_cdc1='ssh -Y chencan@10.111.136.27'
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 alias maketag='find . -name "*.h" -o -name "*.c" -o -name "*.cc" -o -name "*.S" -o -name "*.ch" -o -name "*.cpp" -o -name "*.java" > cscope.files;cscope -bkq -i cscope.files;ctags -R -f tags'

@@ -138,7 +138,7 @@
     attributesfile = ~/.gitattributes
     autocrlf = input
     editor = vim
-    excludesfile = ~/.gitignore
+	excludesfile = /Users/chencan/.gitignore
 
 [diff]
 
@@ -191,9 +191,9 @@
     path = ~/.gitconfig.local
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
+	path = 
 [mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
 [color]
 	ui = auto
