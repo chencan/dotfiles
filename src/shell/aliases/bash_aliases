@@ -21,6 +21,7 @@ alias n="npm"
 alias path='printf "%b\n" "${PATH//:/\\n}"'
 alias q="exit"
 alias t="tmux"
+alias td="tmux a -t default"
 alias y="yarn"
 alias httpserver='python -m SimpleHTTPServer'
 alias ssh_to_server='ssh -Y can.chen@10.111.128.51'
