@@ -1,6 +1,6 @@
 [user]
-    email = chencanjob@gmail.com
-    name = can.chen
+	email = can.chen@nio.com
+	name = can.chen
 [alias]
 
     st  = status -s
