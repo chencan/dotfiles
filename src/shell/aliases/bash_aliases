@@ -26,6 +26,7 @@ alias y="yarn"
 alias httpserver='python -m SimpleHTTPServer'
 alias ssh_to_server='ssh -Y can.chen@10.111.128.51'
 alias ssh_to_cdc1='ssh -Y chencan@10.111.136.27'
+alias ssh_to_z440='ssh -Y can@10.111.253.41'
 alias ssh_to_linux='ssh root@172.20.1.11'
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
