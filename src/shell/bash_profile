@@ -64,6 +64,8 @@ eval $(thefuck --alias)
 
 [ -f /usr/share/autojump/autojump.sh ] && . /usr/share/autojump/autojump.sh
 
+[[ -s /home/can/.autojump/etc/profile.d/autojump.sh ]] && source /home/can/.autojump/etc/profile.d/autojump.sh
+
 # added by Anaconda2 2019.10 installer
 # >>> conda init >>>
 # !! Contents within this block are managed by 'conda init' !!

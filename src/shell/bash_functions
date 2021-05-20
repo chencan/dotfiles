@@ -182,6 +182,23 @@ qt() {
 
 # Usefule function from AOSP build/envsetup.mk.
 
+function crepo2()
+{
+    local HERE=$PWD
+    T=
+    while [ \( $PWD != "/" \) ]; do
+        T=$PWD
+        if [ -d "$T/.git" ]; then
+            \cd $T
+            cd ..
+            crepo
+            return
+        fi
+        \cd ..
+    done
+    \cd $HERE
+    echo "can't find .git"
+}
 
 
 function crepo()
